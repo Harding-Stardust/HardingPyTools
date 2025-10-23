@@ -7,7 +7,7 @@ except ImportError:
 
 import idaapi
 
-import HexRaysPyTools.forms
+import HardingPyTools.forms
 from . import helper
 
 
@@ -555,7 +555,7 @@ class TreeModel(QtCore.QAbstractItemModel):
         class_name = indexes[0].internalPointer().item.class_name
         if not class_name:
             classes = [[x.item.name] for x in self.rootItem.children]
-            class_chooser = HexRaysPyTools.forms.MyChoose(classes, "Select Class", [["Name", 25]])
+            class_chooser = HardingPyTools.forms.MyChoose(classes, "Select Class", [["Name", 25]])
             idx = class_chooser.Show(True)
             if idx != -1:
                 class_name = classes[idx][0]

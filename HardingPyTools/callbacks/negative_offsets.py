@@ -1,14 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import re
-import logging
 import idaapi
 
 from . import actions
 from . import callbacks
-import HexRaysPyTools.core.helper as helper
-import HexRaysPyTools.core.type_library as type_library
-import HexRaysPyTools.forms as forms
+import HardingPyTools.core.helper as helper
+import HardingPyTools.core.type_library as type_library
+import HardingPyTools.forms as forms
 
-logger = logging.getLogger(__name__)
+import community_base as _cb
+
+_G_PLUGIN_NAME = "HardingPyTools"
+
 potential_negatives = {}
 
 
@@ -144,7 +149,7 @@ class ReplaceVisitor(idaapi.ctree_parentee_t):
 
     def create_containing_record(self, expression, index, offset):
         negative_lvar = self.negative_lvars[index]
-        logger.debug("Creating CONTAINING_RECORD macro, offset: {}, negative offset: {}, TYPE: {}".format(
+        _cb.log_print("Creating CONTAINING_RECORD macro, offset: {}, negative offset: {}, TYPE: {}".format(
             negative_lvar.offset,
             offset,
             negative_lvar.parent_tinfo.dstr()
@@ -315,7 +320,7 @@ callbacks.hx_callback_manager.register(idaapi.hxe_maturity, PotentialNegativeCol
 
 
 class ResetContainingStructure(actions.HexRaysPopupAction):
-    description = "Reset Containing Structure"
+    description = f"{_G_PLUGIN_NAME}: Reset Containing Structure"
 
     def __init__(self):
         super(ResetContainingStructure, self).__init__()
@@ -337,7 +342,7 @@ actions.action_manager.register(ResetContainingStructure())
 
 
 class SelectContainingStructure(actions.HexRaysPopupAction):
-    description = "Select Containing Structure"
+    description = f"{_G_PLUGIN_NAME}: Select Containing Structure"
 
     def __init__(self):
         super(SelectContainingStructure, self).__init__()

@@ -1,8 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from collections import namedtuple
 import idaapi
 from . import actions
-import HexRaysPyTools.core.helper as helper
+import HardingPyTools.core.helper as helper
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 RecastLocalVariable = namedtuple('RecastLocalVariable', ['recast_tinfo', 'local_variable'])
 RecastGlobalVariable = namedtuple('RecastGlobalVariable', ['recast_tinfo', 'global_variable_ea'])
@@ -13,14 +17,13 @@ RecastStructure = namedtuple('RecastStructure', ['recast_tinfo', 'structure_name
 
 class RecastItemLeft(actions.HexRaysPopupAction):
 
-    description = "Recast Item"
+    description = f"{_G_PLUGIN_NAME}: Recast Item"
     hotkey = "Shift+L"
 
     def __init__(self):
         super(RecastItemLeft, self).__init__()
 
     def extract_recast_info(self, cfunc, ctree_item):
-        # type: (idaapi.cfunc_t, idaapi.ctree_item_t) -> namedtuple
         # Returns one of the Recast... namedtuple or None if nothing was found
 
         if ctree_item.citype != idaapi.VDI_EXPR:
@@ -137,16 +140,16 @@ class RecastItemLeft(actions.HexRaysPopupAction):
             return False
 
         if isinstance(ri, RecastLocalVariable):
-            self.set_label('Recast Variable "{0}" to {1}'.format(ri.local_variable.name, ri.recast_tinfo.dstr()))
+            self.set_label(f'{_G_PLUGIN_NAME}: Recast Variable "{ri.local_variable.name}" to {ri.recast_tinfo.dstr()}')
         elif isinstance(ri, RecastGlobalVariable):
             gvar_name = idaapi.get_name(ri.global_variable_ea)
-            self.set_label('Recast Global Variable "{0}" to {1}'.format(gvar_name, ri.recast_tinfo.dstr()))
+            self.set_label(f'{_G_PLUGIN_NAME}: Recast Global Variable "{gvar_name}" to {ri.recast_tinfo.dstr()}')
         elif isinstance(ri, RecastArgument):
-            self.set_label("Recast Argument")
+            self.set_label(f"{_G_PLUGIN_NAME}: Recast Argument")
         elif isinstance(ri, RecastStructure):
-            self.set_label("Recast Field of {0} structure".format(ri.structure_name))
+            self.set_label(f"{_G_PLUGIN_NAME}: Recast Field of {ri.structure_name} structure")
         elif isinstance(ri, RecastReturn):
-            self.set_label("Recast Return to ".format(ri.recast_tinfo.dstr()))
+            self.set_label(f"{_G_PLUGIN_NAME}: Recast Return to {ri.recast_tinfo.dstr()}")
         else:
             raise NotImplementedError
         return True
@@ -209,7 +212,7 @@ class RecastItemLeft(actions.HexRaysPopupAction):
 class RecastItemRight(RecastItemLeft):
 
     name = "my:RecastItemRight"
-    description = "Recast Item"
+    description = f"{_G_PLUGIN_NAME}: Recast Item"
     hotkey = "Shift+R"
 
     def __init__(self):

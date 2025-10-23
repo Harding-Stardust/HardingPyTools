@@ -4,7 +4,7 @@ import logging
 
 import idaapi
 from . import helper
-import HexRaysPyTools.settings as settings
+import HardingPyTools.settings as settings
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def singleton(cls):
 
 @singleton
 class XrefStorage(object):
-    ARRAY_NAME = "$HexRaysPyTools:XrefStorage"
+    ARRAY_NAME = "$HardingPyTools:XrefStorage"
 
     def __init__(self):
         """

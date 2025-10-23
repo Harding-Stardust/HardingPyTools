@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
-
 from . import actions
-import HexRaysPyTools.api as api
-import HexRaysPyTools.forms as forms
-import HexRaysPyTools.core.helper as helper
+import HardingPyTools.api as api
+import HardingPyTools.forms as forms
+import HardingPyTools.core.helper as helper
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 class _StructAllocChoose(forms.MyChoose):
     def __init__(self, items):
@@ -44,7 +47,7 @@ class _GuessAllocationVisitor(api.RecursiveObjectUpwardsVisitor):
 
 
 class GuessAllocation(actions.HexRaysPopupAction):
-    description = "Guess allocation"
+    description = f"{_G_PLUGIN_NAME}: Guess allocation"
     hotkey = None
 
     def __init__(self):

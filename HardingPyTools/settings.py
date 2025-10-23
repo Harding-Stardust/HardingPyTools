@@ -8,7 +8,7 @@ except ImportError:
     # for python 2
     import ConfigParser as configparser
 
-CONFIG_FILE_PATH = os.path.join(ida_diskio.get_user_idadir(), 'cfg', 'HexRaysPyTools.cfg')
+CONFIG_FILE_PATH = os.path.join(ida_diskio.get_user_idadir(), 'cfg', 'HardingPyTools.cfg')
 CONFIG_DIRECTORY = os.path.join(ida_diskio.get_user_idadir(), 'cfg')
 
 DEBUG_MESSAGE_LEVEL = logging.INFO
@@ -22,7 +22,7 @@ STORE_XREFS = True
 SCAN_ANY_TYPE = False
 
 TEMPLATED_TYPES_FILE = os.path.join(
-                ida_diskio.get_user_idadir(), 'plugins', 'HexRaysPyTools', 'types', 'templated_types.toml')
+                ida_diskio.get_user_idadir(), 'plugins', 'HardingPyTools', 'types', 'templated_types.toml')
 
 
 def add_default_settings(config):

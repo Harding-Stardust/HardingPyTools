@@ -3,7 +3,7 @@
 
 import os
 import toml
-import HexRaysPyTools.settings as settings
+import HardingPyTools.settings as settings
 
 class TemplatedTypes:
     def __init__(self):

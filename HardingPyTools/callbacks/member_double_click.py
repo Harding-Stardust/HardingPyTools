@@ -1,7 +1,7 @@
 import idaapi
 
 from . import callbacks
-import HexRaysPyTools.core.helper as helper
+import HardingPyTools.core.helper as helper
 
 
 class MemberDoubleClick(callbacks.HexRaysEventHandler):

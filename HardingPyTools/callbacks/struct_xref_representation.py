@@ -1,15 +1,17 @@
-# encoding:utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
 import idc
-
 from . import actions
-import HexRaysPyTools.core.helper as helper
-import HexRaysPyTools.core.struct_xrefs as struct_xrefs
-import HexRaysPyTools.forms as forms
+import HardingPyTools.core.helper as helper
+import HardingPyTools.core.struct_xrefs as struct_xrefs
+import HardingPyTools.forms as forms
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 class FindFieldXrefs(actions.HexRaysXrefAction):
-    description = "Field Xrefs"
+    description = f"{_G_PLUGIN_NAME}: Field Xrefs"
     hotkey = "Ctrl+X"
 
     def __init__(self):

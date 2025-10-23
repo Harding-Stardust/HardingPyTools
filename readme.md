@@ -1,3 +1,5 @@
+### Another fork trying to keep this awesome plugin alive
+
 ### Pulled in useful PR's & forks to keep upto date as main repo has gone stale
 
 #### Added new [Templated Type view](#templated-types-view) to Structure Builder
@@ -30,11 +32,11 @@ Plugin for IDA Pro
 
 The plugin assists in the creation of classes/structures and detection of virtual tables. It also facilitates transforming decompiler output faster and allows to do some stuff which is otherwise impossible.
 
-**Note**: The plugin supports IDA Pro 7.x with Python 2/3.
+**Note**: ~~The plugin supports IDA Pro 7.x with Python 2/3.~~ HardingPyTools fork supports IDA 8.4+
 
 # Installation
 
-- Copy `HexRaysPyTools.py` file and `HexRaysPyTools` directory to [`$IDAUSR/plugins`](https://hex-rays.com/blog/igors-tip-of-the-week-33-idas-user-directory-idausr/) directory. 
+- Copy `HardingPyTools.py` file and `HardingPyTools` directory to [`$IDAUSR/plugins`](https://hex-rays.com/blog/igors-tip-of-the-week-33-idas-user-directory-idausr/) directory. 
 
 - Install the plugin requirements found in the `requirements.txt` file. Be sure to install these for the Python environment used by your IDA installation.
 
@@ -42,13 +44,13 @@ The plugin assists in the creation of classes/structures and detection of virtua
 
 ## Configuration
 
-Can be found at [`$IDAUSR\cfg\HexRaysPyTools.cfg`](https://hex-rays.com/blog/igors-tip-of-the-week-33-idas-user-directory-idausr/)
+Can be found at [`$IDAUSR\cfg\HardingPyTools.cfg`](https://hex-rays.com/blog/igors-tip-of-the-week-33-idas-user-directory-idausr/)
 
 * `debug_message_level`. Set 10 if you have a bug and want to show the log along with the information about how it was encountered in the issue.
 * `propagate_through_all_names`. Set `True` if you want to rename not only the default variables for the [Propagate Name](#Propagate) feature.
 * `store_xrefs`. Specifies whether to store the cross-references collected during the decompilation phase inside the database. (Default - True)
 * `scan_any_type`. Set `True` if you want to apply scanning to any variable type. By default, it is possible to scan only basic types like `DWORD`, `QWORD`, `void *` e t.c. and pointers to non-defined structure declarations.
-* `templated_types_file`. Set to default TOML file path for templated types view. (Default - Empty, will auto load `%IDA_DIR%/Plugins/HexRaysPyTools/types/templated_types.toml`)
+* `templated_types_file`. Set to default TOML file path for templated types view. (Default - Empty, will auto load `%IDA_DIR%/Plugins/HardingPyTools/types/templated_types.toml`)
 
 # Features
 
@@ -120,7 +122,7 @@ __Structure View__ - switches to the structure builder view
 
 ### Structure Cross-references (Ctrl + X)
 
-With HexRaysPyTools, every time the F5 button is pressed and code is decompiled, the information about addressing to fields is stored inside cache. It can be retrieved with the "Field Xrefs" menu. So, it is better to apply reconstructed types to as many locations as possible to have more information about the way structures are used.
+With HardingPyTools, every time the F5 button is pressed and code is decompiled, the information about addressing to fields is stored inside cache. It can be retrieved with the "Field Xrefs" menu. So, it is better to apply reconstructed types to as many locations as possible to have more information about the way structures are used.
 
 Note: IDA 7.4 has now an official implementation of this feature, available through Shift-X hotkey.
 
@@ -355,4 +357,4 @@ Usage:
 [virtual_functions]: Img/virtual_functions.JPG
 [scanned_variables]: Img/fields_xref.JPG
 [classes]: Img/classes.JPG
-[feature_history]: https://github.com/igogo-x86/HexRaysPyTools/wiki/History
+[feature_history]: https://github.com/igogo-x86/HardingPyTools/wiki/History

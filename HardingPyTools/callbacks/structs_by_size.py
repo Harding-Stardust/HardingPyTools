@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
-
 from . import actions
-import HexRaysPyTools.forms as forms
-import HexRaysPyTools.core.type_library as type_library
+import HardingPyTools.forms as forms
+import HardingPyTools.core.type_library as type_library
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 def _choose_structure_by_size(size):
     result = type_library.choose_til()
@@ -34,7 +37,7 @@ def _choose_structure_by_size(size):
 
 class GetStructureBySize(actions.HexRaysPopupAction):
     # TODO: apply type automatically if expression like `var = new(size)`
-    description = "Structures with this size"
+    description = f"{_G_PLUGIN_NAME}: Structures with this size"
 
     def __init__(self):
         super(GetStructureBySize, self).__init__()

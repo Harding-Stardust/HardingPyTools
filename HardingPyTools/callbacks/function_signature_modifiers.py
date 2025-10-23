@@ -1,10 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
 from . import actions
-import HexRaysPyTools.core.const as const
+import HardingPyTools.core.const as const
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 class ConvertToUsercall(actions.HexRaysPopupAction):
-    description = "Convert to __usercall"
+    description = f"{_G_PLUGIN_NAME}: Convert to __usercall"
 
     def __init__(self):
         super(ConvertToUsercall, self).__init__()
@@ -14,27 +19,32 @@ class ConvertToUsercall(actions.HexRaysPopupAction):
 
     def activate(self, ctx):
         vu = idaapi.get_widget_vdui(ctx.widget)
-        function_tinfo = idaapi.tinfo_t()
-        if not vu.cfunc.get_func_type(function_tinfo):
-            return
-        function_details = idaapi.func_type_data_t()
-        function_tinfo.get_func_details(function_details)
-        convention = idaapi.CM_CC_MASK & function_details.cc
-        if convention == idaapi.CM_CC_CDECL:
-            function_details.cc = idaapi.CM_CC_SPECIAL
-        elif convention in (idaapi.CM_CC_STDCALL, idaapi.CM_CC_FASTCALL, idaapi.CM_CC_PASCAL, idaapi.CM_CC_THISCALL):
-            function_details.cc = idaapi.CM_CC_SPECIALP
-        elif convention == idaapi.CM_CC_ELLIPSIS:
-            function_details.cc = idaapi.CM_CC_SPECIALE
-        else:
-            return
-        function_tinfo.create_func(function_details)
-        idaapi.apply_tinfo(vu.cfunc.entry_ea, function_tinfo, idaapi.TINFO_DEFINITE)
+        _cb.function_convert_to_usercall(vu.cfunc.entry_ea, arg_debug=False)
+        
+        # function_tinfo = idaapi.tinfo_t()
+        # if not vu.cfunc.get_func_type(function_tinfo):
+        #     return
+        
+        
+
+        # function_details = idaapi.func_type_data_t()
+        # function_tinfo.get_func_details(function_details)
+        # convention = idaapi.CM_CC_MASK & function_details.cc
+        # if convention == idaapi.CM_CC_CDECL:
+            # function_details.cc = idaapi.CM_CC_SPECIAL
+        # elif convention in (idaapi.CM_CC_STDCALL, idaapi.CM_CC_FASTCALL, idaapi.CM_CC_PASCAL, idaapi.CM_CC_THISCALL):
+            # function_details.cc = idaapi.CM_CC_SPECIALP
+        # elif convention == idaapi.CM_CC_ELLIPSIS:
+            # function_details.cc = idaapi.CM_CC_SPECIALE
+        # else:
+            # return
+        # function_tinfo.create_func(function_details)
+        # idaapi.apply_tinfo(vu.cfunc.entry_ea, function_tinfo, idaapi.TINFO_DEFINITE)
         vu.refresh_view(True)
 
 
 class AddRemoveReturn(actions.HexRaysPopupAction):
-    description = "Add/Remove Return"
+    description = f"{_G_PLUGIN_NAME}: Add/Remove Return"
 
     def __init__(self):
         super(AddRemoveReturn, self).__init__()
@@ -59,7 +69,7 @@ class AddRemoveReturn(actions.HexRaysPopupAction):
 
 
 class RemoveArgument(actions.HexRaysPopupAction):
-    description = "Remove Argument"
+    description = f"{_G_PLUGIN_NAME}Remove Argument"
 
     def __init__(self):
         super(RemoveArgument, self).__init__()

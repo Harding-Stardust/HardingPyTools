@@ -1,11 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
 from . import actions
-import HexRaysPyTools.api as api
-import HexRaysPyTools.core.cache as cache
-import HexRaysPyTools.core.helper as helper
+import HardingPyTools.api as api
+import HardingPyTools.core.cache as cache
+import HardingPyTools.core.helper as helper
 from ..core.variable_scanner import NewShallowSearchVisitor, NewDeepSearchVisitor, DeepReturnVisitor
 from ..core.temporary_structure import TemporaryStructureModel
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 class Scanner(actions.HexRaysPopupAction):
     """
@@ -25,7 +29,7 @@ class Scanner(actions.HexRaysPopupAction):
 
 
 class ShallowScanVariable(Scanner):
-    description = "Scan Variable"
+    description = f"{_G_PLUGIN_NAME}: Scan Variable"
     hotkey = "F"
 
     def __init__(self):
@@ -43,7 +47,7 @@ class ShallowScanVariable(Scanner):
 
 
 class DeepScanVariable(Scanner):
-    description = "Deep Scan Variable"
+    description = f"{_G_PLUGIN_NAME}: Deep Scan Variable"
     hotkey = "Shift+Alt+F"
 
     def __init__(self):
@@ -63,7 +67,7 @@ class DeepScanVariable(Scanner):
 
 
 class RecognizeShape(Scanner):
-    description = "Recognize Shape"
+    description = f"{_G_PLUGIN_NAME}: Recognize Shape"
 
     def __init__(self):
         super(RecognizeShape, self).__init__()
@@ -90,7 +94,7 @@ class RecognizeShape(Scanner):
 
 
 class DeepScanReturn(Scanner):
-    description = "Deep Scan Returned Variables"
+    description = f"{_G_PLUGIN_NAME}: Deep Scan Returned Variables"
 
     def __init__(self):
         super(DeepScanReturn, self).__init__()
@@ -113,7 +117,7 @@ class DeepScanReturn(Scanner):
 
 
 class DeepScanFunctions(actions.Action):
-    description = "Scan First Argument"
+    description = f"{_G_PLUGIN_NAME}: Scan First Argument"
 
     def __init__(self):
         super(DeepScanFunctions, self).__init__()

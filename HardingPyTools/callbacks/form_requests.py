@@ -1,14 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
 
 from . import actions
-import HexRaysPyTools.core.cache as cache
-import HexRaysPyTools.core.classes as classes
-from HexRaysPyTools.core.structure_graph import StructureGraph
-from HexRaysPyTools.forms import StructureGraphViewer, ClassViewer, StructureBuilder
+import HardingPyTools.core.cache as cache
+import HardingPyTools.core.classes as classes
+from HardingPyTools.core.structure_graph import StructureGraph
+from HardingPyTools.forms import StructureGraphViewer, ClassViewer, StructureBuilder
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 class ShowGraph(actions.Action):
-    description = "Show graph"
+    description = f"{_G_PLUGIN_NAME}: Show graph"
     hotkey = "G"
 
     def __init__(self):
@@ -37,7 +41,7 @@ actions.action_manager.register(ShowGraph())
 
 
 class ShowClasses(actions.Action):
-    description = "Classes"
+    description = f"{_G_PLUGIN_NAME}: Classes"
     hotkey = "Alt+F1"
 
     def __init__(self):
@@ -61,7 +65,7 @@ idaapi.attach_action_to_menu('View/Open subviews/Local types', show_classes.name
 
 
 class ShowStructureBuilder(actions.HexRaysPopupAction):
-    description = "Show Structure Builder"
+    description = f"{_G_PLUGIN_NAME}: Show Structure Builder"
     hotkey = "Alt+F8"
 
     def __init__(self):

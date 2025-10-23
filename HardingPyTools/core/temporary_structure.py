@@ -1,12 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import bisect
 import itertools
 try:
     from PySide6 import QtCore, QtWidgets, QtGui # IDA 9.2+
 except ImportError:
     from PyQt5 import QtCore, QtWidgets, QtGui
-from functools import reduce
+# from functools import reduce
 
-import ida_name
 import idaapi
 import idc
 import sys
@@ -16,9 +18,11 @@ from . import common
 from . import const
 from . import helper
 from . import templated_types
-import HexRaysPyTools.api as api
-import HexRaysPyTools.core.type_library as type_library
-from HexRaysPyTools.forms import MyChoose
+import HardingPyTools.api as api
+import HardingPyTools.core.type_library as type_library
+from HardingPyTools.forms import MyChoose
+
+import community_base as _cb
 
 def log2(v):
     """
@@ -664,8 +668,15 @@ class TemporaryStructureModel(QtCore.QAbstractTableModel):
 
     def flags(self, index):
         if index.column() in (2, 3):
-            return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked
-        return super(TemporaryStructureModel, self).flags(index)
+            if _cb.ida_version() >= 920:
+                raise NotImplemented
+            else:
+                return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked 
+            # TODO: TypeError: unsupported operand type(s) for |: 'ItemFlag' and 'EditTrigger'
+            # Traceback (most recent call last):
+            #   File "C:\Users/Harding/AppData/Roaming/Hex-Rays/IDA Pro/plugins\HardingPyTools\core\temporary_structure.py", line 667, in flags
+            #     return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked
+            #         return super(TemporaryStructureModel, self).flags(index)
 
     # HELPER METHODS #
 
@@ -717,7 +728,7 @@ class TemporaryStructureModel(QtCore.QAbstractTableModel):
             # if previous_ordinal:
             #     reply = QtWidgets.QMessageBox.question(
             #         None,
-            #         "HexRaysPyTools",
+            #         "HardingPyTools",
             #         "Structure already exist. Do you want to overwrite it?",
             #         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
             #     )

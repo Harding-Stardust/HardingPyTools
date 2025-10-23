@@ -5,10 +5,10 @@ import idaapi
 import idc
 import ida_ida
 
-import HexRaysPyTools.core.cache as cache
-import HexRaysPyTools.core.const as const
-import HexRaysPyTools.settings as settings
-import HexRaysPyTools.forms as forms
+import HardingPyTools.core.cache as cache
+import HardingPyTools.core.const as const
+import HardingPyTools.settings as settings
+import HardingPyTools.forms as forms
 
 
 logger = logging.getLogger(__name__)
@@ -376,7 +376,7 @@ def create_padding_udt_member(offset, size):
         udt_member.type = const.BYTE_TINFO
     else:
         if size < 1 or size > 0xffffffff:
-            print("HexRaysPyTools::core::helper::create_padding_udt_member: size is out of uint32 range (offset:{} size:{})".format(offset, size))
+            print("HardingPyTools::core::helper::create_padding_udt_member: size is out of uint32 range (offset:{} size:{})".format(offset, size))
         array_data = idaapi.array_type_data_t()
         array_data.base = 0
         array_data.elem_type = const.BYTE_TINFO

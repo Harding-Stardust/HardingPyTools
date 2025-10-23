@@ -1,11 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
-
 from . import actions
-from HexRaysPyTools.core.temporary_structure import VirtualTable
+from HardingPyTools.core.temporary_structure import VirtualTable
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 class CreateVtable(actions.Action):
-    description = "Create Virtual Table"
+    description = f"{_G_PLUGIN_NAME}: Create Virtual Table"
     hotkey = "V"
 
     def __init__(self):

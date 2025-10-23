@@ -4,8 +4,8 @@ import time
 import idaapi
 
 from . import callbacks
-import HexRaysPyTools.core.struct_xrefs as struct_xrefs
-import HexRaysPyTools.core.helper as helper
+import HardingPyTools.core.struct_xrefs as struct_xrefs
+import HardingPyTools.core.helper as helper
 
 logger = logging.getLogger(__name__)
 

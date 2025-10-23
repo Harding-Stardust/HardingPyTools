@@ -1,18 +1,15 @@
-import logging
-import idaapi
-import idc
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from .core.helper import to_hex
 from .core import helper
-
-logger = logging.getLogger(__name__)
-
+import community_base as _cb
 
 SETTING_START_FROM_CURRENT_EXPR = True
 
-
 class ScanObject(object):
     def __init__(self):
-        self.ea = idaapi.BADADDR
+        self.ea = _cb._ida_idaapi.BADADDR
         self.name = None
         self.tinfo = None
         self.id = 0
@@ -20,7 +17,7 @@ class ScanObject(object):
     @staticmethod
     def create(cfunc, arg):
         # Creates object suitable for scaning either from cexpr_t or ctree_item_t
-        if isinstance(arg, idaapi.ctree_item_t):
+        if isinstance(arg, _cb._ida_hexrays.ctree_item_t):
             lvar = arg.get_lvar()
             if lvar:
                 index = list(cfunc.get_lvars()).index(lvar)
@@ -28,28 +25,28 @@ class ScanObject(object):
                 if arg.e:
                     result.ea = ScanObject.get_expression_address(cfunc, arg.e)
                 return result
-            if arg.citype != idaapi.VDI_EXPR:
+            if arg.citype != _cb._ida_hexrays.VDI_EXPR:
                 return None
             cexpr = arg.e
         else:
             cexpr = arg
 
-        if cexpr.op == idaapi.cot_var:
+        if cexpr.op == _cb._ida_hexrays.cot_var:
             lvar = cfunc.get_lvars()[cexpr.v.idx]
             result = VariableObject(lvar, cexpr.v.idx)
             result.ea = ScanObject.get_expression_address(cfunc, cexpr)
             return result
-        elif cexpr.op == idaapi.cot_memptr:
+        elif cexpr.op == _cb._ida_hexrays.cot_memptr:
             t = cexpr.x.type.get_pointed_object()
             result = StructPtrObject(t.dstr(), cexpr.m)
             result.name = helper.get_member_name(t, cexpr.m)
-        elif cexpr.op == idaapi.cot_memref:
+        elif cexpr.op == _cb._ida_hexrays.cot_memref:
             t = cexpr.x.type
             result = StructRefObject(t.dstr(), cexpr.m)
             result.name = helper.get_member_name(t, cexpr.m)
-        elif cexpr.op == idaapi.cot_obj:
+        elif cexpr.op == _cb._ida_hexrays.cot_obj:
             result = GlobalVariableObject(cexpr.obj_ea)
-            result.name = idaapi.get_short_name(cexpr.obj_ea)
+            result.name = _cb._ida_name.get_short_name(cexpr.obj_ea)
         else:
             return
         result.tinfo = cexpr.type
@@ -60,7 +57,7 @@ class ScanObject(object):
     def get_expression_address(cfunc, cexpr):
         expr = cexpr
 
-        while expr and expr.ea == idaapi.BADADDR:
+        while expr and expr.ea == _cb._ida_idaapi.BADADDR:
             expr = expr.to_specific_type
             expr = cfunc.body.find_parent_of(expr)
 
@@ -97,7 +94,7 @@ class VariableObject(ScanObject):
         self.id = SO_LOCAL_VARIABLE
 
     def is_target(self, cexpr):
-        return cexpr.op == idaapi.cot_var and cexpr.v.idx == self.index
+        return cexpr.op == _cb._ida_hexrays.cot_var and cexpr.v.idx == self.index
 
 
 class StructPtrObject(ScanObject):
@@ -109,7 +106,7 @@ class StructPtrObject(ScanObject):
         self.id = SO_STRUCT_POINTER
 
     def is_target(self, cexpr):
-        return cexpr.op == idaapi.cot_memptr and cexpr.m == self.offset and \
+        return cexpr.op == _cb._ida_hexrays.cot_memptr and cexpr.m == self.offset and \
                cexpr.x.type.get_pointed_object().dstr() == self.struct_name
 
 
@@ -122,7 +119,7 @@ class StructRefObject(ScanObject):
         self.id = SO_STRUCT_REFERENCE
 
     def is_target(self, cexpr):
-        return cexpr.op == idaapi.cot_memref and cexpr.m == self.offset and cexpr.x.type.dstr() == self.struct_name
+        return cexpr.op == _cb._ida_hexrays.cot_memref and cexpr.m == self.offset and cexpr.x.type.dstr() == self.struct_name
 
 
 class GlobalVariableObject(ScanObject):
@@ -133,7 +130,7 @@ class GlobalVariableObject(ScanObject):
         self.id = SO_GLOBAL_OBJECT
 
     def is_target(self, cexpr):
-        return cexpr.op == idaapi.cot_obj and self.obj_ea == cexpr.obj_ea
+        return cexpr.op == _cb._ida_hexrays.cot_obj and self.obj_ea == cexpr.obj_ea
 
 
 class CallArgObject(ScanObject):
@@ -145,11 +142,11 @@ class CallArgObject(ScanObject):
         self.id = SO_CALL_ARGUMENT
 
     def is_target(self, cexpr):
-        return cexpr.op == idaapi.cot_call and cexpr.x.obj_ea == self.func_ea
+        return cexpr.op == _cb._ida_hexrays.cot_call and cexpr.x.obj_ea == self.func_ea
 
     def create_scan_obj(self, cfunc, cexpr):
         e = cexpr.a[self.arg_idx]
-        while e.op in (idaapi.cot_cast, idaapi.cot_ref, idaapi.cot_add, idaapi.cot_sub, idaapi.cot_idx):
+        while e.op in (_cb._ida_hexrays.cot_cast, _cb._ida_hexrays.cot_ref, _cb._ida_hexrays.cot_add, _cb._ida_hexrays.cot_sub, _cb._ida_hexrays.cot_idx):
             e = e.x
         return ScanObject.create(cfunc, e)
 
@@ -172,7 +169,7 @@ class ReturnedObject(ScanObject):
         self.id = SO_RETURNED_OBJECT
 
     def is_target(self, cexpr):
-        return cexpr.op == idaapi.cot_call and cexpr.x.obj_ea == self.__func_ea
+        return cexpr.op == _cb._ida_hexrays.cot_call and cexpr.x.obj_ea == self.__func_ea
 
 
 class MemoryAllocationObject(ScanObject):
@@ -185,17 +182,17 @@ class MemoryAllocationObject(ScanObject):
 
     @staticmethod
     def create(cfunc, cexpr):
-        if cexpr.op == idaapi.cot_call:
+        if cexpr.op == _cb._ida_hexrays.cot_call:
             e = cexpr
-        elif cexpr.op == idaapi.cot_cast and cexpr.x.op == idaapi.cot_call:
+        elif cexpr.op == _cb._ida_hexrays.cot_cast and cexpr.x.op == _cb._ida_hexrays.cot_call:
             e = cexpr.x
         else:
             return
 
-        func_name = idaapi.get_short_name(e.x.obj_ea)
+        func_name = _cb._ida_names.get_short_name(e.x.obj_ea)
         if "malloc" in func_name or "operator new" in func_name:
             carg = e.a[0]
-            if carg.op == idaapi.cot_num:
+            if carg.op == _cb._ida_hexrays.cot_num:
                 size = carg.numval()
             else:
                 size = 0
@@ -208,7 +205,7 @@ ASSIGNMENT_RIGHT = 1
 ASSIGNMENT_LEFT = 2
 
 
-class ObjectVisitor(idaapi.ctree_parentee_t):
+class ObjectVisitor(_cb._ida_hexrays.ctree_parentee_t):
     def __init__(self, cfunc, obj, data, skip_until_object):
         super(ObjectVisitor, self).__init__()
         self._cfunc = cfunc
@@ -216,7 +213,7 @@ class ObjectVisitor(idaapi.ctree_parentee_t):
         self._init_obj = obj
         self._data = data
         self._start_ea = obj.ea
-        self._skip = skip_until_object if self._start_ea != idaapi.BADADDR else False
+        self._skip = skip_until_object if self._start_ea != _cb._ida_idaapi.BADADDR else False
         self.crippled = False
 
     def process(self):
@@ -229,7 +226,7 @@ class ObjectVisitor(idaapi.ctree_parentee_t):
     def _get_line(self):
         for p in reversed(self.parents):
             if not p.is_expr():
-                return idaapi.tag_remove(p.print1(self._cfunc.__ref__()))
+                return _cb._ida_lines.tag_remove(p.print1(self._cfunc.__ref__()))
         AssertionError("Parent instruction is not found")
 
     def _manipulate(self, cexpr, obj):
@@ -244,16 +241,16 @@ class ObjectVisitor(idaapi.ctree_parentee_t):
         self.__manipulate(cexpr, obj)
 
     def __manipulate(self, cexpr, obj):
-        logger.debug("Expression {} at {} Id - {}".format(
+        _cb.log_print("Expression {} at {} Id - {}".format(
             cexpr.opname,
             to_hex(helper.find_asm_address(cexpr, self.parents)),
-            obj.id))
+            obj.id), arg_type="DEBUG")
 
 
 class ObjectDownwardsVisitor(ObjectVisitor):
     def __init__(self, cfunc, obj, data=None, skip_until_object=False):
         super(ObjectDownwardsVisitor, self).__init__(cfunc, obj, data, skip_until_object)
-        self.cv_flags |= idaapi.CV_POST
+        self.cv_flags |= _cb._ida_hexrays.CV_POST
 
     def visit_expr(self, cexpr):
         if self._skip:
@@ -262,11 +259,11 @@ class ObjectDownwardsVisitor(ObjectVisitor):
             else:
                 return 0
 
-        if cexpr.op != idaapi.cot_asg:
+        if cexpr.op != _cb._ida_hexrays.cot_asg:
             return 0
 
         x_cexpr = cexpr.x
-        if cexpr.y.op == idaapi.cot_cast:
+        if cexpr.y.op == _cb._ida_hexrays.cot_cast:
             y_cexpr = cexpr.y.x
         else:
             y_cexpr = cexpr.y
@@ -274,8 +271,8 @@ class ObjectDownwardsVisitor(ObjectVisitor):
         for obj in self._objects:
             if obj.is_target(x_cexpr):
                 if self.__is_object_overwritten(x_cexpr, obj, y_cexpr):
-                    logger.info("Removed object {} from scanning at {}".format(
-                        obj, to_hex(helper.find_asm_address(x_cexpr, self.parents))))
+                    _cb.log_print("Removed object {} from scanning at {}".format(
+                        obj, to_hex(helper.find_asm_address(x_cexpr, self.parents))), arg_type="INFO")
                     self._objects.remove(obj)
                 return 0
             elif obj.is_target(y_cexpr):
@@ -296,9 +293,9 @@ class ObjectDownwardsVisitor(ObjectVisitor):
         return 0
 
     def _is_initial_object(self, cexpr):
-        if cexpr.op == idaapi.cot_asg:
+        if cexpr.op == _cb._ida_hexrays.cot_asg:
             cexpr = cexpr.y
-            if cexpr.op == idaapi.cot_cast:
+            if cexpr.op == _cb._ida_hexrays.cot_cast:
                 cexpr = cexpr.x
         return self._init_obj.is_target(cexpr) and helper.find_asm_address(cexpr, self.parents) == self._start_ea
 
@@ -306,12 +303,12 @@ class ObjectDownwardsVisitor(ObjectVisitor):
         if len(self._objects) < 2:
             return False
 
-        if y_cexpr.op == idaapi.cot_cast:
+        if y_cexpr.op == _cb._ida_hexrays.cot_cast:
             e = y_cexpr.x
         else:
             e = y_cexpr
 
-        if e.op != idaapi.cot_call or len(e.a) == 0:
+        if e.op != _cb._ida_hexrays.cot_call or len(e.a) == 0:
             return True
 
         for obj in self._objects:
@@ -340,11 +337,11 @@ class ObjectUpwardsVisitor(ObjectVisitor):
                 self._objects.append(obj)
             return 0
 
-        if cexpr.op != idaapi.cot_asg:
+        if cexpr.op != _cb._ida_hexrays.cot_asg:
             return 0
 
         x_cexpr = cexpr.x
-        if cexpr.y.op == idaapi.cot_cast:
+        if cexpr.y.op == _cb._ida_hexrays.cot_cast:
             y_cexpr = cexpr.y.x
         else:
             y_cexpr = cexpr.y
@@ -374,10 +371,10 @@ class ObjectUpwardsVisitor(ObjectVisitor):
 
     def process(self):
         self._stage = self.STAGE_PREPARE
-        self.cv_flags &= ~idaapi.CV_POST
+        self.cv_flags &= ~_cb._ida_hexrays.CV_POST
         super(ObjectUpwardsVisitor, self).process()
         self._stage = self.STAGE_PARSING
-        self.cv_flags |= idaapi.CV_POST
+        self.cv_flags |= _cb._ida_hexrays.CV_POST
         self.__prepare()
         super(ObjectUpwardsVisitor, self).process()
 
@@ -413,7 +410,7 @@ class RecursiveObjectVisitor(ObjectVisitor):
         self.crippled = False
         self._arg_idx = -1
         self._debug_scan_tree = {}
-        self.__debug_scan_tree_root = idc.get_name(self._cfunc.entry_ea)
+        self.__debug_scan_tree_root = _cb._idc.get_name(self._cfunc.entry_ea)
         self.__debug_message = []
 
     def visit_expr(self, cexpr):
@@ -446,7 +443,7 @@ class RecursiveObjectVisitor(ObjectVisitor):
 
     def dump_scan_tree(self):
         self.__prepare_debug_message()
-        logger.info("{}\n---------------".format("\n".join(self.__debug_message)))
+        _cb.log_print("{}\n---------------".format("\n".join(self.__debug_message)), arg_type="INFO")
 
     def __prepare_debug_message(self, key=None, level=1):
         if key is None:
@@ -478,8 +475,8 @@ class RecursiveObjectVisitor(ObjectVisitor):
         return False
 
     def _add_scan_tree_info(self, func_ea, arg_idx):
-        head_node = (idc.get_name(self._cfunc.entry_ea), self._arg_idx)
-        tail_node = (idc.get_name(func_ea), arg_idx)
+        head_node = (_cb._idc.get_name(self._cfunc.entry_ea), self._arg_idx)
+        tail_node = (_cb._idc.get_name(func_ea), arg_idx)
         if head_node in self._debug_scan_tree:
             self._debug_scan_tree[head_node].add(tail_node)
         else:
@@ -506,7 +503,7 @@ class RecursiveObjectVisitor(ObjectVisitor):
         b = self._cfunc.body.cblock
         if b.size() == 1:
             e = b.at(0)
-            return e.op == idaapi.cit_return or (e.op == idaapi.cit_expr and e.cexpr.op == idaapi.cot_call)
+            return e.op == _cb._ida_hexrays.cit_return or (e.op == _cb._ida_hexrays.cit_expr and e.cexpr.op == _cb._ida_hexrays.cot_call)
         return False
 
 
@@ -517,17 +514,17 @@ class RecursiveObjectDownwardsVisitor(RecursiveObjectVisitor, ObjectDownwardsVis
     def _check_call(self, cexpr):
         parent = self.parent_expr()
         grandparent = self.parents.at(self.parents.size() - 2)
-        if parent.op == idaapi.cot_call:
+        if parent.op == _cb._ida_hexrays.cot_call:
             call_cexpr = parent
             arg_cexpr = cexpr
-        elif parent.op == idaapi.cot_cast and grandparent.op == idaapi.cot_call:
+        elif parent.op == _cb._ida_hexrays.cot_cast and grandparent.op == _cb._ida_hexrays.cot_call:
             call_cexpr = grandparent.cexpr
             arg_cexpr = parent
         else:
             return
         idx, _ = helper.get_func_argument_info(call_cexpr, arg_cexpr)
         func_ea = call_cexpr.x.obj_ea
-        if func_ea == idaapi.BADADDR:
+        if func_ea == _cb._ida_idaapi.BADADDR:
             return
         if self._add_visit(func_ea, idx):
             self._add_scan_tree_info(func_ea, idx)
@@ -556,7 +553,7 @@ class RecursiveObjectUpwardsVisitor(RecursiveObjectVisitor, ObjectUpwardsVisitor
         self._call_obj = obj if obj.id == SO_CALL_ARGUMENT else None
 
     def _check_call(self, cexpr):
-        if cexpr.op == idaapi.cot_var and self._cfunc.get_lvars()[cexpr.v.idx].is_arg_var:
+        if cexpr.op == _cb._ida_hexrays.cot_var and self._cfunc.get_lvars()[cexpr.v.idx].is_arg_var:
             func_ea = self._cfunc.entry_ea
             arg_idx = cexpr.v.idx
             if self._add_visit(func_ea, arg_idx):
@@ -571,7 +568,7 @@ class RecursiveObjectUpwardsVisitor(RecursiveObjectVisitor, ObjectUpwardsVisitor
             self._new_for_visit.clear()
             for func_ea, arg_idx in new_visit:
                 funcs = helper.get_funcs_calling_address(func_ea)
-                obj = CallArgObject.create(idaapi.decompile(func_ea), arg_idx)
+                obj = CallArgObject.create(_cb.decompile(func_ea), arg_idx)
                 for callee_ea in funcs:
                     cfunc = helper.decompile_function(callee_ea)
                     if cfunc:

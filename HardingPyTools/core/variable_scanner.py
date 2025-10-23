@@ -4,7 +4,7 @@ import idc
 from . import const
 from . import helper
 from . import temporary_structure
-import HexRaysPyTools.api as api
+import HardingPyTools.api as api
 
 logger = logging.getLogger(__name__)
 

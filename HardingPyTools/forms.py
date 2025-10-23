@@ -1,9 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 
 try:
     from PySide6 import QtCore, QtWidgets, QtGui # IDA 9.2+
 except ImportError:
     from PyQt5 import QtCore, QtWidgets, QtGui
+
+import community_base as _cb
 
 import idaapi
 import ida_kernwin
@@ -256,7 +261,7 @@ class StructureBuilder(idaapi.PluginForm):
             os.path.join(
                 idc.idadir(),
                 'plugins',
-                'HexRaysPyTools',
+                'HardingPyTools',
                 'types'),
             "Toml file (*.toml)"
         )
@@ -313,12 +318,20 @@ class ClassViewer(idaapi.PluginForm):
         self.class_tree = QtWidgets.QTreeView()
         self.line_edit_filter = QtWidgets.QLineEdit()
 
-        self.action_collapse = QtWidgets.QAction("Collapse all", self.class_tree)
-        self.action_expand = QtWidgets.QAction("Expand all", self.class_tree)
-        self.action_set_arg = QtWidgets.QAction("Set First Argument Type", self.class_tree)
-        self.action_rollback = QtWidgets.QAction("Rollback", self.class_tree)
-        self.action_refresh = QtWidgets.QAction("Refresh", self.class_tree)
-        self.action_commit = QtWidgets.QAction("Commit", self.class_tree)
+        if _cb.ida_version() >= 920:
+            self.action_collapse = QtGui.QAction("Collapse all", self.class_tree)
+            self.action_expand = QtGui.QAction("Expand all", self.class_tree)
+            self.action_set_arg = QtGui.QAction("Set First Argument Type", self.class_tree)
+            self.action_rollback = QtGui.QAction("Rollback", self.class_tree)
+            self.action_refresh = QtGui.QAction("Refresh", self.class_tree)
+            self.action_commit = QtGui.QAction("Commit", self.class_tree)
+        else:
+            self.action_collapse = QtWidgets.QAction("Collapse all", self.class_tree)
+            self.action_expand = QtWidgets.QAction("Expand all", self.class_tree)
+            self.action_set_arg = QtWidgets.QAction("Set First Argument Type", self.class_tree)
+            self.action_rollback = QtWidgets.QAction("Rollback", self.class_tree)
+            self.action_refresh = QtWidgets.QAction("Refresh", self.class_tree)
+            self.action_commit = QtWidgets.QAction("Commit", self.class_tree)
 
         self.menu = QtWidgets.QMenu(self.parent)
 

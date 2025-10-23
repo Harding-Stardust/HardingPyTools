@@ -1,20 +1,18 @@
-import re
-import logging
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+import re
 import idaapi
 import idc
-
 from . import actions
-import HexRaysPyTools.api as api
-import HexRaysPyTools.core.helper as helper
-import HexRaysPyTools.settings as settings
+import HardingPyTools.api as api
+import HardingPyTools.core.helper as helper
+import HardingPyTools.settings as settings
+import community_base as _cb
 
-
-logger = logging.getLogger(__name__)
-
+_G_PLUGIN_NAME = "HardingPyTools"
 
 def _should_be_renamed(old_name, new_name):
-    # type: (str, str) -> bool
     """ Checks if there's a point to rename a variable or argument """
 
     # There's no point to rename into default name
@@ -31,7 +29,7 @@ def _is_default_name(string):
 
 
 class RenameOther(actions.HexRaysPopupAction):
-    description = "Take other name"
+    description = f"{_G_PLUGIN_NAME}: Take other name"
     hotkey = "Ctrl+N"
 
     def __init__(self):
@@ -76,7 +74,7 @@ class RenameOther(actions.HexRaysPopupAction):
 
 
 class RenameInside(actions.HexRaysPopupAction):
-    description = "Rename inside argument"
+    description = f"{_G_PLUGIN_NAME}: Rename inside argument"
     hotkey = "Shift+N"
 
     def __init__(self):
@@ -119,7 +117,7 @@ class RenameInside(actions.HexRaysPopupAction):
 
 
 class RenameOutside(actions.HexRaysPopupAction):
-    description = "Take argument name"
+    description = f"{_G_PLUGIN_NAME}: Take argument name"
     hotkey = "Ctrl+Shift+N"
 
     def __init__(self):
@@ -160,7 +158,7 @@ class RenameOutside(actions.HexRaysPopupAction):
             return lvar, arg_name.lstrip("_")
 
 class RenameMemberFromFunctionName(actions.HexRaysPopupAction):
-    description = "Take name from function"
+    description = f"{_G_PLUGIN_NAME}: Take name from function"
     hotkey = "Ctrl+N"
 
     def __init__(self):
@@ -231,7 +229,7 @@ class _RenameUsingAssertVisitor(idaapi.ctree_parentee_t):
             arg_expr = expr.a[self.__arg_idx]
             if arg_expr.op != idaapi.cot_obj:
                 cexpr_ea = helper.find_asm_address(expr, self.parents)
-                logger.error("Argument is a not string at {}".format(helper.to_hex(cexpr_ea)))
+                _cb.log_print("Argument is a not string at {}".format(helper.to_hex(cexpr_ea)), arg_type="ERROR")
                 return 1
             self.__add_func_name(arg_expr)
         return 0
@@ -241,11 +239,11 @@ class _RenameUsingAssertVisitor(idaapi.ctree_parentee_t):
         if len(self.__possible_names) == 1:
             # Only one potential name was found, rename function using it
             new_name = self.__possible_names.pop()
-            logging.info("Renaming function at {} to `{}`".format(helper.to_hex(self.__cfunc.entry_ea), new_name))
+            _cb.log_print("Renaming function at {} to `{}`".format(helper.to_hex(self.__cfunc.entry_ea), new_name), arg_type="INFO")
             idc.set_name(self.__cfunc.entry_ea, new_name)
         elif len(self.__possible_names) > 1:
-            logger.error("Function at {} has more than one candidate for renaming: {}".format(
-                helper.to_hex(self.__cfunc.entry_ea), ", ".join(self.__possible_names)))
+            _cb.log_print("Function at {} has more than one candidate for renaming: {}".format(
+                helper.to_hex(self.__cfunc.entry_ea), ", ".join(self.__possible_names)), arg_type="ERROR")
 
     def __add_func_name(self, arg_expr):
         new_name = idc.get_strlit_contents(arg_expr.obj_ea)
@@ -253,15 +251,15 @@ class _RenameUsingAssertVisitor(idaapi.ctree_parentee_t):
             # convert bytes to str (python 3)
             new_name = new_name.decode('ascii')
         if not idaapi.is_valid_typename(new_name):
-            logger.warn("Argument has a weird name `{}` at {}".format(
-                new_name, helper.to_hex(helper.find_asm_address(arg_expr, self.parents))))
+            _cb.log_print("Argument has a weird name `{}` at {}".format(
+                new_name, helper.to_hex(helper.find_asm_address(arg_expr, self.parents))), arg_type="WARNING")
             return
 
         self.__possible_names.add(new_name)
 
 
 class RenameUsingAssert(actions.HexRaysPopupAction):
-    description = "Rename as assert argument"
+    description = f"{_G_PLUGIN_NAME}: Rename as assert argument"
     hotkey = None
 
     def __init__(self):
@@ -331,7 +329,7 @@ class _NamePropagator(api.RecursiveObjectDownwardsVisitor):
 
         def _manipulate(self, cexpr, obj):
             if self.crippled:
-                logger.debug("Skipping crippled function at {}".format(helper.to_hex(self._cfunc.entry_ea)))
+                _cb.log_print("Skipping crippled function at {}".format(helper.to_hex(self._cfunc.entry_ea)))
                 return
 
             if obj.id == api.SO_GLOBAL_OBJECT:
@@ -340,7 +338,7 @@ class _NamePropagator(api.RecursiveObjectDownwardsVisitor):
                     new_name = self.__rename_with_prefix(
                         lambda x: idaapi.set_name(cexpr.obj_ea, x),
                         self.__propagated_name)
-                    logger.debug("Renamed global variable from {} to {}".format(old_name, new_name))
+                    _cb.log_print("Renamed global variable from {} to {}".format(old_name, new_name))
             elif obj.id == api.SO_LOCAL_VARIABLE:
                 lvar = self._cfunc.get_lvars()[cexpr.v.idx]
                 old_name = lvar.name
@@ -348,7 +346,7 @@ class _NamePropagator(api.RecursiveObjectDownwardsVisitor):
                     new_name = self.__rename_with_prefix(
                         lambda x: self.__hx_view.rename_lvar(lvar, x, True),
                         self.__propagated_name)
-                    logger.debug("Renamed local variable from {} to {}".format(old_name, new_name))
+                    _cb.log_print("Renamed local variable from {} to {}".format(old_name, new_name))
             elif obj.id in (api.SO_STRUCT_POINTER, api.SO_STRUCT_REFERENCE):
                 struct_tinfo = cexpr.x.type
                 offset = cexpr.m
@@ -358,7 +356,7 @@ class _NamePropagator(api.RecursiveObjectDownwardsVisitor):
                     new_name = self.__rename_with_prefix(
                         lambda x: helper.change_member_name(struct_tinfo.dstr(), offset, x),
                         self.__propagated_name)
-                    logger.debug("Renamed struct member from {} to {}".format(old_name, new_name))
+                    _cb.log_print("Renamed struct member from {} to {}".format(old_name, new_name))
 
         def _finish(self):
             self.__hx_view.switch_to(self._cfunc, True)
@@ -371,7 +369,7 @@ class _NamePropagator(api.RecursiveObjectDownwardsVisitor):
 
 
 class PropagateName(actions.HexRaysPopupAction):
-    description = "Propagate name"
+    description = f"{_G_PLUGIN_NAME}: Propagate name"
     hotkey = "P"
 
     def __init__(self):

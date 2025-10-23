@@ -1,9 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
 import idc
 
 from . import actions
 from . import callbacks
 
+_G_PLUGIN_NAME = "HardingPyTools"
 
 def inverse_if_condition(cif):
     # cexpr_t has become broken but fortunately still exist `assing` method which copies one expr into another
@@ -19,9 +23,7 @@ def inverse_if(cif):
     inverse_if_condition(cif)
     idaapi.qswap(cif.ithen, cif.ielse)
 
-
-_ARRAY_STORAGE_PREFIX = "$HexRaysPyTools:IfThenElse:"
-
+_ARRAY_STORAGE_PREFIX = "$HardingPyTools:IfThenElse:"
 
 def has_inverted(func_ea):
     # Find if function has any swapped THEN-ELSE branches
@@ -61,7 +63,7 @@ def invert(func_ea, if_ea):
 
 
 class SwapThenElse(actions.HexRaysPopupAction):
-    description = "Swap then/else"
+    description = f"{_G_PLUGIN_NAME}:  Swap then/else"
     hotkey = "Shift+Alt+S" # Shift+S is now "Split Variable"
 
     def __init__(self):

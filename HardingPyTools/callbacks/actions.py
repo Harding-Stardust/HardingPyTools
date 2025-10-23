@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import idaapi
 
 from .callbacks import hx_callback_manager, HexRaysEventHandler
@@ -38,14 +41,12 @@ class Action(idaapi.action_handler_t):
 
     @property
     def name(self):
-        return "HexRaysPyTools:" + type(self).__name__
+        return "HardingPyTools:" + type(self).__name__
 
     def activate(self, ctx):
-        # type: (idaapi.action_activation_ctx_t) -> None
         raise NotImplementedError
 
     def update(self, ctx):
-        # type: (idaapi.action_activation_ctx_t) -> None
         raise NotImplementedError
 
 
@@ -62,11 +63,9 @@ class HexRaysPopupAction(Action):
         super(HexRaysPopupAction, self).__init__()
 
     def activate(self, ctx):
-        # type: (idaapi.action_activation_ctx_t) -> None
         raise NotImplementedError
 
     def check(self, hx_view):
-        # type: (idaapi.vdui_t) -> bool
         raise NotImplementedError
 
     def update(self, ctx):

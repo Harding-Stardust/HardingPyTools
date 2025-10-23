@@ -6,7 +6,7 @@ import idc
 
 from . import const
 from idaapi import til_t
-import HexRaysPyTools.forms as forms
+import HardingPyTools.forms as forms
 
 
 def _enable_library_ordinals(library_num):
@@ -21,7 +21,7 @@ def _enable_library_ordinals(library_num):
         print("[ERROR] Failed to enable ordinals")
         return
 
-    print("HexRaysPyTools DLL: {}".format(dll))
+    print("HardingPyTools DLL: {}".format(dll))
 
     dll.get_idati.restype = ctypes.POINTER(til_t)
     idati = dll.get_idati()

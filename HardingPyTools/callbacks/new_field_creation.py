@@ -1,15 +1,15 @@
-import logging
-import re
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+import re
 import idaapi
 import idc
-
 from . import actions
-import HexRaysPyTools.core.helper as helper
-import HexRaysPyTools.core.const as const
+import HardingPyTools.core.helper as helper
+import HardingPyTools.core.const as const
+import community_base as _cb
 
-logger = logging.getLogger(__name__)
-
+_G_PLUGIN_NAME = "HardingPyTools"
 
 def _is_gap_field(cexpr):
     if cexpr.op not in (idaapi.cot_memptr, idaapi.cot_memref):
@@ -20,7 +20,7 @@ def _is_gap_field(cexpr):
 
 
 class CreateNewField(actions.HexRaysPopupAction):
-    description = "Create New Field"
+    description = f"{_G_PLUGIN_NAME}: Create New Field"
     hotkey = "Ctrl+F"
 
     def __init__(self):
@@ -68,7 +68,7 @@ class CreateNewField(actions.HexRaysPopupAction):
 
         result = self.parse_declaration(declaration)
         if result is None:
-            logger.warn("Bad member declaration")
+            _cb.log_warning("Bad member declaration")
             return
 
         field_tinfo, field_name = result
@@ -84,7 +84,7 @@ class CreateNewField(actions.HexRaysPopupAction):
         gap_leftover = gap_size - idx - field_size
 
         if gap_leftover < 0:
-            logger.error("Too big size for the field. Type with maximum {0} bytes can be used".format(gap_size - idx))
+            _cb.log_error("Too big size for the field. Type with maximum {0} bytes can be used".format(gap_size - idx))
             return
 
         iterator = udt_data.find(udt_member)
@@ -112,17 +112,17 @@ class CreateNewField(actions.HexRaysPopupAction):
     def parse_declaration(declaration):
         m = re.search(r"^(\w+[ *]+)(\w+)(\[(\d+)\])?$", declaration)
         if m is None:
-            logger.error("Member declaration should be like `TYPE_NAME NAME[SIZE]` (Array is optional)")
+            _cb.log_error("Member declaration should be like `TYPE_NAME NAME[SIZE]` (Array is optional)")
             return
 
         type_name, field_name, _, arr_size = m.groups()
         if field_name[0].isdigit():
-            logger.error("Bad field name")
+            _cb.log_error("Bad field name")
             return
 
         result = idc.parse_decl(type_name, 0)
         if result is None:
-            logger.error("Failed to parse member type. It should be like `TYPE_NAME NAME[SIZE]` (Array is optional)")
+            _cb.log_error("Failed to parse member type. It should be like `TYPE_NAME NAME[SIZE]` (Array is optional)")
             return
 
         _, tp, fld = result
