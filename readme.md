@@ -1,4 +1,4 @@
-### Another fork trying to keep this awesome plugin alive
+### Another fork trying to keep this awesome plugin alive. Updated for IDA 9.2 but should work for IDA 9.0+
 
 ### Pulled in useful PR's & forks to keep upto date as main repo has gone stale
 
@@ -357,4 +357,4 @@ Usage:
 [virtual_functions]: Img/virtual_functions.JPG
 [scanned_variables]: Img/fields_xref.JPG
 [classes]: Img/classes.JPG
-[feature_history]: https://github.com/igogo-x86/HardingPyTools/wiki/History
+[feature_history]: https://github.com/igogo-x86/HexRaysPyTools/wiki/History

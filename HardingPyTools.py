@@ -5,12 +5,13 @@
 Fork of HexRaysPyTools that is somewhat updated for IDA 9.2
 '''
 
-__version__ = "2025-10-23 21:07:23"
+__version__ = "2025-10-24 13:00:01"
 __author__ = "Harding"
 __description__ = __doc__
 __copyright__ = "Copyright 2025"
 __credits__ = ["https://github.com/oopsmishap/HexRaysPyTools",
-               "https://github.com/igogo-x86/HexRaysPyTools"]
+               "https://github.com/igogo-x86/HexRaysPyTools",
+               "https://github.com/Tim-Sobolev/HexRaysPyTools"]
 __license__ = "GPL 3.0"
 __maintainer__ = "Harding"
 __email__ = "not.at.the.moment@example.com"
@@ -18,7 +19,7 @@ __status__ = "Development"
 __url__ = "https://github.com/Harding-Stardust/HardingPyTools"
 
 from pydantic import validate_call
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 import HardingPyTools.core.cache as cache
 import HardingPyTools.core.const as const

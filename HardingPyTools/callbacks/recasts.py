@@ -17,7 +17,7 @@ RecastStructure = namedtuple('RecastStructure', ['recast_tinfo', 'structure_name
 
 class RecastItemLeft(actions.HexRaysPopupAction):
 
-    description = f"{_G_PLUGIN_NAME}: Recast Item"
+    description = f"Recast Item    [{_G_PLUGIN_NAME}]"
     hotkey = "Shift+L"
 
     def __init__(self):
@@ -140,16 +140,16 @@ class RecastItemLeft(actions.HexRaysPopupAction):
             return False
 
         if isinstance(ri, RecastLocalVariable):
-            self.set_label(f'{_G_PLUGIN_NAME}: Recast Variable "{ri.local_variable.name}" to {ri.recast_tinfo.dstr()}')
+            self.set_label(f'Recast Variable "{ri.local_variable.name}" to {ri.recast_tinfo.dstr()}    [{_G_PLUGIN_NAME}]')
         elif isinstance(ri, RecastGlobalVariable):
             gvar_name = idaapi.get_name(ri.global_variable_ea)
-            self.set_label(f'{_G_PLUGIN_NAME}: Recast Global Variable "{gvar_name}" to {ri.recast_tinfo.dstr()}')
+            self.set_label(f'Recast Global Variable "{gvar_name}" to {ri.recast_tinfo.dstr()}    [{_G_PLUGIN_NAME}]')
         elif isinstance(ri, RecastArgument):
-            self.set_label(f"{_G_PLUGIN_NAME}: Recast Argument")
+            self.set_label(f"Recast Argument    [{_G_PLUGIN_NAME}]")
         elif isinstance(ri, RecastStructure):
-            self.set_label(f"{_G_PLUGIN_NAME}: Recast Field of {ri.structure_name} structure")
+            self.set_label(f"Recast Field of {ri.structure_name} structure    [{_G_PLUGIN_NAME}]")
         elif isinstance(ri, RecastReturn):
-            self.set_label(f"{_G_PLUGIN_NAME}: Recast Return to {ri.recast_tinfo.dstr()}")
+            self.set_label(f"Recast Return to {ri.recast_tinfo.dstr()}    [{_G_PLUGIN_NAME}]")
         else:
             raise NotImplementedError
         return True
@@ -212,7 +212,7 @@ class RecastItemLeft(actions.HexRaysPopupAction):
 class RecastItemRight(RecastItemLeft):
 
     name = "my:RecastItemRight"
-    description = f"{_G_PLUGIN_NAME}: Recast Item"
+    description = f"Recast Item    [{_G_PLUGIN_NAME}]"
     hotkey = "Shift+R"
 
     def __init__(self):

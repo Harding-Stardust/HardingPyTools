@@ -8,7 +8,7 @@ from . import actions
 import HardingPyTools.api as api
 import HardingPyTools.core.helper as helper
 import HardingPyTools.settings as settings
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 _G_PLUGIN_NAME = "HardingPyTools"
 
@@ -29,7 +29,7 @@ def _is_default_name(string):
 
 
 class RenameOther(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Take other name"
+    description = f"Take other name    [{_G_PLUGIN_NAME}]"
     hotkey = "Ctrl+N"
 
     def __init__(self):
@@ -74,7 +74,7 @@ class RenameOther(actions.HexRaysPopupAction):
 
 
 class RenameInside(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Rename inside argument"
+    description = f"Rename inside argument    [{_G_PLUGIN_NAME}]"
     hotkey = "Shift+N"
 
     def __init__(self):
@@ -117,7 +117,7 @@ class RenameInside(actions.HexRaysPopupAction):
 
 
 class RenameOutside(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Take argument name"
+    description = f"Take argument name    [{_G_PLUGIN_NAME}]"
     hotkey = "Ctrl+Shift+N"
 
     def __init__(self):
@@ -158,7 +158,7 @@ class RenameOutside(actions.HexRaysPopupAction):
             return lvar, arg_name.lstrip("_")
 
 class RenameMemberFromFunctionName(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Take name from function"
+    description = f"Take name from function    [{_G_PLUGIN_NAME}]"
     hotkey = "Ctrl+N"
 
     def __init__(self):
@@ -259,7 +259,7 @@ class _RenameUsingAssertVisitor(idaapi.ctree_parentee_t):
 
 
 class RenameUsingAssert(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Rename as assert argument"
+    description = f"Rename as assert argument    [{_G_PLUGIN_NAME}]"
     hotkey = None
 
     def __init__(self):
@@ -369,7 +369,7 @@ class _NamePropagator(api.RecursiveObjectDownwardsVisitor):
 
 
 class PropagateName(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Propagate name"
+    description = f"Propagate name    [{_G_PLUGIN_NAME}]"
     hotkey = "P"
 
     def __init__(self):

@@ -8,7 +8,7 @@ try:
 except ImportError:
     from PyQt5 import QtCore, QtWidgets, QtGui
 
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 import idaapi
 import ida_kernwin

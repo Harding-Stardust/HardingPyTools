@@ -37,7 +37,7 @@ def _choose_structure_by_size(size):
 
 class GetStructureBySize(actions.HexRaysPopupAction):
     # TODO: apply type automatically if expression like `var = new(size)`
-    description = f"{_G_PLUGIN_NAME}: Structures with this size"
+    description = f"Structures with this size    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(GetStructureBySize, self).__init__()

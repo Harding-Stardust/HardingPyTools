@@ -8,7 +8,7 @@ from HardingPyTools.core.temporary_structure import VirtualTable
 _G_PLUGIN_NAME = "HardingPyTools"
 
 class CreateVtable(actions.Action):
-    description = f"{_G_PLUGIN_NAME}: Create Virtual Table"
+    description = f"Create Virtual Table    [{_G_PLUGIN_NAME}]"
     hotkey = "V"
 
     def __init__(self):

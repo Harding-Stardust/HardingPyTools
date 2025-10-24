@@ -47,7 +47,7 @@ class _GuessAllocationVisitor(api.RecursiveObjectUpwardsVisitor):
 
 
 class GuessAllocation(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Guess allocation"
+    description = f"Guess allocation    [{_G_PLUGIN_NAME}]"
     hotkey = None
 
     def __init__(self):

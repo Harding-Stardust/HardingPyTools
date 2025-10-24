@@ -10,7 +10,7 @@ import HardingPyTools.core.helper as helper
 import HardingPyTools.core.type_library as type_library
 import HardingPyTools.forms as forms
 
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 _G_PLUGIN_NAME = "HardingPyTools"
 
@@ -320,7 +320,7 @@ callbacks.hx_callback_manager.register(idaapi.hxe_maturity, PotentialNegativeCol
 
 
 class ResetContainingStructure(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Reset Containing Structure"
+    description = f"Reset Containing Structure    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(ResetContainingStructure, self).__init__()
@@ -342,7 +342,7 @@ actions.action_manager.register(ResetContainingStructure())
 
 
 class SelectContainingStructure(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Select Containing Structure"
+    description = f"Select Containing Structure    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(SelectContainingStructure, self).__init__()

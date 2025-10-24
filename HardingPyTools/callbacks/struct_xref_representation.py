@@ -11,8 +11,8 @@ import HardingPyTools.forms as forms
 _G_PLUGIN_NAME = "HardingPyTools"
 
 class FindFieldXrefs(actions.HexRaysXrefAction):
-    description = f"{_G_PLUGIN_NAME}: Field Xrefs"
-    hotkey = "Ctrl+X"
+    description = f"Field Xrefs    [{_G_PLUGIN_NAME}]"
+    hotkey = "Ctrl+Alt+X"
 
     def __init__(self):
         super(FindFieldXrefs, self).__init__()

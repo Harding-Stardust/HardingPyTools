@@ -12,7 +12,7 @@ from HardingPyTools.forms import StructureGraphViewer, ClassViewer, StructureBui
 _G_PLUGIN_NAME = "HardingPyTools"
 
 class ShowGraph(actions.Action):
-    description = f"{_G_PLUGIN_NAME}: Show graph"
+    description = f"Show graph    [{_G_PLUGIN_NAME}]"
     hotkey = "G"
 
     def __init__(self):
@@ -41,7 +41,7 @@ actions.action_manager.register(ShowGraph())
 
 
 class ShowClasses(actions.Action):
-    description = f"{_G_PLUGIN_NAME}: Classes"
+    description = f"Classes    [{_G_PLUGIN_NAME}]"
     hotkey = "Alt+F1"
 
     def __init__(self):
@@ -65,7 +65,7 @@ idaapi.attach_action_to_menu('View/Open subviews/Local types', show_classes.name
 
 
 class ShowStructureBuilder(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Show Structure Builder"
+    description = f"Show Structure Builder    [{_G_PLUGIN_NAME}]"
     hotkey = "Alt+F8"
 
     def __init__(self):

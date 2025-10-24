@@ -3,7 +3,7 @@
 
 from .core.helper import to_hex
 from .core import helper
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 SETTING_START_FROM_CURRENT_EXPR = True
 
@@ -514,6 +514,11 @@ class RecursiveObjectDownwardsVisitor(RecursiveObjectVisitor, ObjectDownwardsVis
     def _check_call(self, cexpr):
         parent = self.parent_expr()
         grandparent = self.parents.at(self.parents.size() - 2)
+        
+        if parent is None:
+            _cb.log_print(f"got parent == None, don't what to do about that. I think this can happen if it is a grlobal struct. cexpr = {cexpr}", arg_type="ERROR")
+            return
+        
         if parent.op == _cb._ida_hexrays.cot_call:
             call_cexpr = parent
             arg_cexpr = cexpr

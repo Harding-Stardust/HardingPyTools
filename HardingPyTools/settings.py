@@ -2,11 +2,7 @@ import os
 import logging
 import ida_diskio
 
-try:
-    import configparser
-except ImportError:
-    # for python 2
-    import ConfigParser as configparser
+import configparser
 
 CONFIG_FILE_PATH = os.path.join(ida_diskio.get_user_idadir(), 'cfg', 'HardingPyTools.cfg')
 CONFIG_DIRECTORY = os.path.join(ida_diskio.get_user_idadir(), 'cfg')

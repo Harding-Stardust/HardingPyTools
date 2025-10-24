@@ -9,7 +9,7 @@ import community_base as _cb # https://github.com/Harding-Stardust/community_bas
 _G_PLUGIN_NAME = "HardingPyTools"
 
 class ConvertToUsercall(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Convert to __usercall"
+    description = f"Convert to __usercall    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(ConvertToUsercall, self).__init__()
@@ -20,31 +20,10 @@ class ConvertToUsercall(actions.HexRaysPopupAction):
     def activate(self, ctx):
         vu = idaapi.get_widget_vdui(ctx.widget)
         _cb.function_convert_to_usercall(vu.cfunc.entry_ea, arg_debug=False)
-        
-        # function_tinfo = idaapi.tinfo_t()
-        # if not vu.cfunc.get_func_type(function_tinfo):
-        #     return
-        
-        
-
-        # function_details = idaapi.func_type_data_t()
-        # function_tinfo.get_func_details(function_details)
-        # convention = idaapi.CM_CC_MASK & function_details.cc
-        # if convention == idaapi.CM_CC_CDECL:
-            # function_details.cc = idaapi.CM_CC_SPECIAL
-        # elif convention in (idaapi.CM_CC_STDCALL, idaapi.CM_CC_FASTCALL, idaapi.CM_CC_PASCAL, idaapi.CM_CC_THISCALL):
-            # function_details.cc = idaapi.CM_CC_SPECIALP
-        # elif convention == idaapi.CM_CC_ELLIPSIS:
-            # function_details.cc = idaapi.CM_CC_SPECIALE
-        # else:
-            # return
-        # function_tinfo.create_func(function_details)
-        # idaapi.apply_tinfo(vu.cfunc.entry_ea, function_tinfo, idaapi.TINFO_DEFINITE)
         vu.refresh_view(True)
 
-
 class AddRemoveReturn(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}: Add/Remove Return"
+    description = f"Add/Remove Return    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(AddRemoveReturn, self).__init__()

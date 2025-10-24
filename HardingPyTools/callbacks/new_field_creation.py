@@ -7,7 +7,7 @@ import idc
 from . import actions
 import HardingPyTools.core.helper as helper
 import HardingPyTools.core.const as const
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 _G_PLUGIN_NAME = "HardingPyTools"
 
@@ -21,7 +21,7 @@ def _is_gap_field(cexpr):
 
 class CreateNewField(actions.HexRaysPopupAction):
     description = f"{_G_PLUGIN_NAME}: Create New Field"
-    hotkey = "Ctrl+F"
+    hotkey = "Ctrl+Alt+F"
 
     def __init__(self):
         super(CreateNewField, self).__init__()
@@ -68,7 +68,7 @@ class CreateNewField(actions.HexRaysPopupAction):
 
         result = self.parse_declaration(declaration)
         if result is None:
-            _cb.log_warning("Bad member declaration")
+            _cb.log_print("Bad member declaration", arg_type="WARNING")
             return
 
         field_tinfo, field_name = result
@@ -84,7 +84,7 @@ class CreateNewField(actions.HexRaysPopupAction):
         gap_leftover = gap_size - idx - field_size
 
         if gap_leftover < 0:
-            _cb.log_error("Too big size for the field. Type with maximum {0} bytes can be used".format(gap_size - idx))
+            _cb.log_print("Too big size for the field. Type with maximum {0} bytes can be used".format(gap_size - idx), arg_type="ERROR")
             return
 
         iterator = udt_data.find(udt_member)
@@ -112,17 +112,17 @@ class CreateNewField(actions.HexRaysPopupAction):
     def parse_declaration(declaration):
         m = re.search(r"^(\w+[ *]+)(\w+)(\[(\d+)\])?$", declaration)
         if m is None:
-            _cb.log_error("Member declaration should be like `TYPE_NAME NAME[SIZE]` (Array is optional)")
+            _cb.log_print("Member declaration should be like `TYPE_NAME NAME[SIZE]` (Array is optional)", arg_type="ERROR")
             return
 
         type_name, field_name, _, arr_size = m.groups()
         if field_name[0].isdigit():
-            _cb.log_error("Bad field name")
+            _cb.log_print("Bad field name", arg_type="ERROR")
             return
 
         result = idc.parse_decl(type_name, 0)
         if result is None:
-            _cb.log_error("Failed to parse member type. It should be like `TYPE_NAME NAME[SIZE]` (Array is optional)")
+            _cb.log_print("Failed to parse member type. It should be like `TYPE_NAME NAME[SIZE]` (Array is optional)", arg_type="ERROR")
             return
 
         _, tp, fld = result

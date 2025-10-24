@@ -29,8 +29,8 @@ class Scanner(actions.HexRaysPopupAction):
 
 
 class ShallowScanVariable(Scanner):
-    description = f"{_G_PLUGIN_NAME}: Scan Variable"
-    hotkey = "F"
+    description = f"Scan Variable    [{_G_PLUGIN_NAME}]"
+    hotkey = "Shift+Alt+F"
 
     def __init__(self):
         super(ShallowScanVariable, self).__init__()
@@ -47,8 +47,8 @@ class ShallowScanVariable(Scanner):
 
 
 class DeepScanVariable(Scanner):
-    description = f"{_G_PLUGIN_NAME}: Deep Scan Variable"
-    hotkey = "Shift+Alt+F"
+    description = f"Deep Scan Variable    [{_G_PLUGIN_NAME}]"
+    hotkey = "F"
 
     def __init__(self):
         super(DeepScanVariable, self).__init__()
@@ -67,7 +67,7 @@ class DeepScanVariable(Scanner):
 
 
 class RecognizeShape(Scanner):
-    description = f"{_G_PLUGIN_NAME}: Recognize Shape"
+    description = f"Recognize Shape    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(RecognizeShape, self).__init__()
@@ -94,7 +94,7 @@ class RecognizeShape(Scanner):
 
 
 class DeepScanReturn(Scanner):
-    description = f"{_G_PLUGIN_NAME}: Deep Scan Returned Variables"
+    description = f"Deep Scan Returned Variables    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(DeepScanReturn, self).__init__()
@@ -117,7 +117,7 @@ class DeepScanReturn(Scanner):
 
 
 class DeepScanFunctions(actions.Action):
-    description = f"{_G_PLUGIN_NAME}: Scan First Argument"
+    description = f"Scan First Argument    [{_G_PLUGIN_NAME}]"
 
     def __init__(self):
         super(DeepScanFunctions, self).__init__()

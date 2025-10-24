@@ -22,7 +22,7 @@ import HardingPyTools.api as api
 import HardingPyTools.core.type_library as type_library
 from HardingPyTools.forms import MyChoose
 
-import community_base as _cb
+import community_base as _cb # https://github.com/Harding-Stardust/community_base/
 
 def log2(v):
     """
@@ -667,16 +667,15 @@ class TemporaryStructureModel(QtCore.QAbstractTableModel):
             return self.headers[section]
 
     def flags(self, index):
-        if index.column() in (2, 3):
-            if _cb.ida_version() >= 920:
-                raise NotImplemented
-            else:
-                return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked 
-            # TODO: TypeError: unsupported operand type(s) for |: 'ItemFlag' and 'EditTrigger'
-            # Traceback (most recent call last):
-            #   File "C:\Users/Harding/AppData/Roaming/Hex-Rays/IDA Pro/plugins\HardingPyTools\core\temporary_structure.py", line 667, in flags
-            #     return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked
-            #         return super(TemporaryStructureModel, self).flags(index)
+        if _cb.ida_version() >= 920:
+            if not index.isValid():
+                return QtCore.Qt.ItemFlags()
+            base = super().flags(index) 
+            if index.column() in (2, 3):
+                return base | QtCore.Qt.ItemIsEditable
+            return base
+        else:
+            return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked 
 
     # HELPER METHODS #
 
@@ -952,16 +951,10 @@ class TemporaryStructureModel(QtCore.QAbstractTableModel):
                     self.add_row(member)
 
     def load_struct(self):
-
-        name = ""
-        while True:
-            name = idaapi.ask_str(name, idaapi.HIST_TYPE, "Enter type:")
-            if name is None:
-                return
-            sid = idc.get_struc_id(name)
-            if sid != idc.BADADDR:
-                break
-
+        struct = _cb._ida_typeinf.tinfo_t()
+        if not _cb._ida_kernwin.choose_struct(struct, "Select structure to load"):
+            return
+        name = _cb._ida_typeinf.get_tid_name(struct.force_tid())
         self.default_name = name
 
         sid = idc.get_struc_id(name)
