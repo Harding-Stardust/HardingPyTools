@@ -1,16 +1,13 @@
-import logging
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import time
-
-import idaapi
-
 from . import callbacks
 import HardingPyTools.core.struct_xrefs as struct_xrefs
 import HardingPyTools.core.helper as helper
+import community_base as _cb
 
-logger = logging.getLogger(__name__)
-
-
-class StructXrefCollectorVisitor(idaapi.ctree_parentee_t):
+class StructXrefCollectorVisitor(_cb._ida_hexrays.ctree_parentee_t):
     def __init__(self, cfunc, storage):
         super(StructXrefCollectorVisitor, self).__init__()
         self.__cfunc = cfunc
@@ -20,9 +17,9 @@ class StructXrefCollectorVisitor(idaapi.ctree_parentee_t):
 
     def visit_expr(self, expression):
         # Checks if expression is reference by pointer or by value
-        if expression.op == idaapi.cot_memptr:
+        if expression.op == _cb._ida_hexrays.cot_memptr:
             struct_type = expression.x.type.get_pointed_object()
-        elif expression.op == idaapi.cot_memref:
+        elif expression.op == _cb._ida_hexrays.cot_memref:
             struct_type = expression.x.type
         else:
             return 0
@@ -33,10 +30,10 @@ class StructXrefCollectorVisitor(idaapi.ctree_parentee_t):
         ea = self.__find_ref_address(expression)
         usage_type = self.__get_type(expression)
 
-        if ea == idaapi.BADADDR or not ordinal:
-            logger.warning("Failed to parse at address {0}, ordinal - {1}, type - {2}".format(
+        if ea == _cb._ida_idaapi.BADADDR or not ordinal:
+            _cb.log_print("Failed to parse at address {0}, ordinal - {1}, type - {2}".format(
                 helper.to_hex(ea), ordinal, struct_type.dstr()
-            ))
+            ), arg_type="WARNING")
 
         one_line = self.__get_line()
 
@@ -55,20 +52,20 @@ class StructXrefCollectorVisitor(idaapi.ctree_parentee_t):
     def process(self):
         t = time.time()
         self.apply_to(self.__cfunc.body, None)
-        self.__storage.update(self.__function_address - idaapi.get_imagebase(), self.__result)
+        self.__storage.update(self.__function_address - _cb.input_file.imagebase, self.__result)
 
         storage_mb_size = len(self.__storage) * 1.0 // 1024 ** 2
-        logger.debug("Xref processing: %f seconds passed, storage size - %.2f MB ", (time.time() - t), storage_mb_size)
+        _cb.log_print(f"Xref processing: {time.time() - t:f} seconds passed, storage size - {storage_mb_size:.2f} MB ")
 
     def __find_ref_address(self, cexpr):
         """ Returns most close virtual address corresponding to cexpr """
 
         ea = cexpr.ea
-        if ea != idaapi.BADADDR:
+        if ea != _cb._ida_idaapi.BADADDR:
             return ea
 
         for p in reversed(self.parents):
-            if p.ea != idaapi.BADADDR:
+            if p.ea != _cb._ida_idaapi.BADADDR:
                 return p.ea
 
     def __get_type(self, cexpr):
@@ -77,11 +74,11 @@ class StructXrefCollectorVisitor(idaapi.ctree_parentee_t):
         for p in reversed(self.parents):
             assert p, "Failed to get type at " + helper.to_hex(self.__function_address)
 
-            if p.cexpr.op == idaapi.cot_call:
+            if p.cexpr.op == _cb._ida_hexrays.cot_call:
                 return 'Arg'
             if not p.is_expr():
                 return 'R'
-            if p.cexpr.op == idaapi.cot_asg:
+            if p.cexpr.op == _cb._ida_hexrays.cot_asg:
                 if p.cexpr.x == child:
                     return 'W'
                 return 'R'
@@ -90,9 +87,8 @@ class StructXrefCollectorVisitor(idaapi.ctree_parentee_t):
     def __get_line(self):
         for p in reversed(self.parents):
             if not p.is_expr():
-                return idaapi.tag_remove(p.print1(self.__cfunc))
+                return _cb._ida_lines.tag_remove(p.print1(self.__cfunc))
         AssertionError("Parent instruction is not found")
-
 
 class StructXrefCollector(callbacks.HexRaysEventHandler):
     def __init__(self):
@@ -100,8 +96,8 @@ class StructXrefCollector(callbacks.HexRaysEventHandler):
 
     def handle(self, event, *args):
         cfunc, level_of_maturity = args
-        if level_of_maturity == idaapi.CMAT_FINAL:
+        if level_of_maturity == _cb._ida_hexrays.CMAT_FINAL:
             StructXrefCollectorVisitor(cfunc, struct_xrefs.XrefStorage()).process()
 
 
-callbacks.hx_callback_manager.register(idaapi.hxe_maturity, StructXrefCollector())
+callbacks.hx_callback_manager.register(_cb._ida_hexrays.hxe_maturity, StructXrefCollector())
