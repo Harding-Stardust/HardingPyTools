@@ -46,35 +46,35 @@ class AddRemoveReturn(actions.HexRaysPopupAction):
         idaapi.apply_tinfo(vu.cfunc.entry_ea, function_tinfo, idaapi.TINFO_DEFINITE)
         vu.refresh_view(True)
 
+# This breaks the code most often and IDA has it's own "remove function argument (shift + del)" so use that instead
+# class RemoveArgument(actions.HexRaysPopupAction):
+    # description = f"Remove Argument    [{_G_PLUGIN_NAME}] (TODO: remove this)"
 
-class RemoveArgument(actions.HexRaysPopupAction):
-    description = f"{_G_PLUGIN_NAME}Remove Argument"
+    # def __init__(self):
+        # super(RemoveArgument, self).__init__()
 
-    def __init__(self):
-        super(RemoveArgument, self).__init__()
+    # def check(self, hx_view):
+        # if hx_view.item.citype != idaapi.VDI_LVAR:
+            # return False
+        # local_variable = hx_view.item.get_lvar()          # type:idaapi.lvar_t
+        # return local_variable.is_arg_var
 
-    def check(self, hx_view):
-        if hx_view.item.citype != idaapi.VDI_LVAR:
-            return False
-        local_variable = hx_view.item.get_lvar()          # type:idaapi.lvar_t
-        return local_variable.is_arg_var
+    # def activate(self, ctx):
+        # vu = idaapi.get_widget_vdui(ctx.widget)
+        # function_tinfo = idaapi.tinfo_t()
+        # if not vu.cfunc.get_func_type(function_tinfo):
+            # return
+        # function_details = idaapi.func_type_data_t()
+        # function_tinfo.get_func_details(function_details)
+        # del_arg = vu.item.get_lvar()
 
-    def activate(self, ctx):
-        vu = idaapi.get_widget_vdui(ctx.widget)
-        function_tinfo = idaapi.tinfo_t()
-        if not vu.cfunc.get_func_type(function_tinfo):
-            return
-        function_details = idaapi.func_type_data_t()
-        function_tinfo.get_func_details(function_details)
-        del_arg = vu.item.get_lvar()
+        # function_details.erase([x for x in function_details if x.name == del_arg.name][0])
 
-        function_details.erase([x for x in function_details if x.name == del_arg.name][0])
-
-        function_tinfo.create_func(function_details)
-        idaapi.apply_tinfo(vu.cfunc.entry_ea, function_tinfo, idaapi.TINFO_DEFINITE)
-        vu.refresh_view(True)
+        # function_tinfo.create_func(function_details)
+        # idaapi.apply_tinfo(vu.cfunc.entry_ea, function_tinfo, idaapi.TINFO_DEFINITE)
+        # vu.refresh_view(True)
 
 
 actions.action_manager.register(ConvertToUsercall())
 actions.action_manager.register(AddRemoveReturn())
-actions.action_manager.register(RemoveArgument())
+# actions.action_manager.register(RemoveArgument())

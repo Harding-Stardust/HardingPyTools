@@ -55,7 +55,9 @@ class StructXrefCollectorVisitor(_cb._ida_hexrays.ctree_parentee_t):
         self.__storage.update(self.__function_address - _cb.input_file.imagebase, self.__result)
 
         storage_mb_size = len(self.__storage) * 1.0 // 1024 ** 2
-        _cb.log_print(f"Xref processing: {time.time() - t:f} seconds passed, storage size - {storage_mb_size:.2f} MB ")
+        l_debug = False
+        if l_debug:
+            _cb.log_print(f"Xref processing: {time.time() - t:f} seconds passed, storage size - {storage_mb_size:.2f} MB ")
 
     def __find_ref_address(self, cexpr):
         """ Returns most close virtual address corresponding to cexpr """

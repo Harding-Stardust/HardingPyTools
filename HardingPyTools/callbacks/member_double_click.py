@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import idaapi
-import idc
 import ida_hexrays
 from . import callbacks
 import HardingPyTools.core.helper as helper
 
-CALLED_FROM_COMMENT = "CALLED_FROM =>"
+
+_G_PLUGIN_NAME = "HardingPyTools"
+_G_CALLED_FROM_COMMENT = f"{_G_PLUGIN_NAME}: CALLED_FROM =>"
 
 class MemberDoubleClick(callbacks.HexRaysEventHandler):
     def __init__(self):
@@ -22,7 +23,7 @@ class MemberDoubleClick(callbacks.HexRaysEventHandler):
         jmp_src = item.e.ea
         src_as_string = "0x{:x}".format(jmp_src)
         if old_comment is None:
-            old_comment = CALLED_FROM_COMMENT
+            old_comment = _G_CALLED_FROM_COMMENT
         if src_as_string not in old_comment:
             return "{} | {}".format(old_comment, src_as_string)
         return old_comment
@@ -55,8 +56,6 @@ class MemberDoubleClick(callbacks.HexRaysEventHandler):
             else:
                 func_offset = item.e.m
                 struct_tinfo = item.e.x.type.get_pointed_object()
-                item_ea = item.e.ea if item.e.ea != idaapi.BADADDR else idc.here()
-
                 func_ea = helper.choose_virtual_func_address(helper.get_member_name(struct_tinfo, func_offset))
                 if func_ea:
                     idaapi.jumpto(func_ea)
@@ -90,7 +89,7 @@ class MemberDoubleClick(callbacks.HexRaysEventHandler):
                     pass
 
     def _get_commented_address_from_vtable(self, vtable_tinfo, method_offset):
-        sid = idaapi.get_struc_id(vtable_tinfo.get_type_name())
+        sid = idaapi.get_struc_id(vtable_tinfo.get_type_name()) # TODO: Is this the correct way to get the structure ID?
         if sid != idaapi.BADADDR:
             sptr = idaapi.get_struc(sid)
             mid = idaapi.get_member_id(sptr, method_offset)
